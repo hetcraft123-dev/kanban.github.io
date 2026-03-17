@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#080810">
-  <title>Kanban · Hetcraft</title>
+  <title>Tablero RR Importaciones · Hetcraft</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -573,12 +573,12 @@
   // ── CONFIG ─────────────────────────────────────────────────────────────
   // 🔧 REEMPLAZA ESTO con tu firebaseConfig del proyecto todo-hetcraft
   const firebaseConfig = {
-    apiKey:            "REPLACE_API_KEY",
-    authDomain:        "REPLACE_AUTH_DOMAIN",
-    projectId:         "REPLACE_PROJECT_ID",
-    storageBucket:     "REPLACE_STORAGE_BUCKET",
-    messagingSenderId: "REPLACE_MSG_ID",
-    appId:             "REPLACE_APP_ID"
+    apiKey:            "AIzaSyDetXdN-ujotpEY7HNJMQB2JEOYooLxpkk",
+    authDomain:        "todo-hetcraft.firebaseapp.com",
+    projectId:         "todo-hetcraft",
+    storageBucket:     "todo-hetcraft.firebasestorage.app",
+    messagingSenderId: "225738970824",
+    appId:             "1:225738970824:web:f3a5c8432a9c3c6595f7fd"
   };
   // ───────────────────────────────────────────────────────────────────────
 
