@@ -12,7 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-
     :root {
       --bg:#080810; --bg2:#0e0e1a; --bg3:#1c1c2e; --bg4:#22223a;
       --card-bg:#181828; --border:#2a2a48; --border2:#38386a;
@@ -24,66 +23,146 @@
       --backlog:#748ffc; --backlog-glow:rgba(116,143,252,.2);
       --urgent:#ff4444; --urgent-glow:rgba(255,68,68,.4);
       --eduardo:#00d2ff; --rodrigo:#a78bfa;
+      --note-accent:#f5c518; --note-glow:rgba(245,197,24,.15);
       --radius:12px; --card-r:10px;
     }
-
     html,body { height:100%; background:var(--bg); color:var(--text); font-family:'Syne',sans-serif; overflow-x:hidden; }
     ::-webkit-scrollbar { width:4px; height:4px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
 
     /* ── HEADER ── */
-    header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:16px 28px 13px; border-bottom:1px solid var(--border);
-      background:linear-gradient(to bottom,rgba(8,8,16,.98),rgba(8,8,16,.9));
-      position:sticky; top:0; z-index:100; backdrop-filter:blur(12px);
-    }
+    header { display:flex; align-items:center; justify-content:space-between; padding:16px 28px 13px; border-bottom:1px solid var(--border); background:linear-gradient(to bottom,rgba(8,8,16,.98),rgba(8,8,16,.9)); position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); }
     .logo { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:800; letter-spacing:-.3px; }
     .logo-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 12px var(--accent-glow); }
     .header-right { display:flex; align-items:center; gap:10px; }
-
-    /* sync dot */
     .sync-dot { width:8px; height:8px; border-radius:50%; background:var(--done); box-shadow:0 0 8px var(--done-glow); transition:all .3s; flex-shrink:0; }
     .sync-dot.syncing { background:var(--prog); box-shadow:0 0 8px var(--prog-glow); animation:blink 1s infinite; }
     .sync-dot.offline  { background:var(--todo); box-shadow:0 0 8px var(--todo-glow); }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-    /* online counter */
-    .online-pill {
-      display:flex; align-items:center; gap:7px;
-      background:var(--bg3); border:1px solid var(--border);
-      border-radius:20px; padding:5px 12px 5px 9px;
-      font-family:'DM Mono',monospace; font-size:11px; color:var(--muted);
-      transition:all .4s;
-    }
-    .online-avatars { display:flex; gap:-2px; align-items:center; }
-    .online-avatar {
-      width:18px; height:18px; border-radius:50%; border:2px solid var(--bg3);
-      display:flex; align-items:center; justify-content:center;
-      font-size:9px; font-weight:800; margin-left:-4px; transition:all .3s;
-    }
+    .online-pill { display:flex; align-items:center; gap:7px; background:var(--bg3); border:1px solid var(--border); border-radius:20px; padding:5px 12px 5px 9px; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+    .online-avatars { display:flex; align-items:center; }
+    .online-avatar { width:18px; height:18px; border-radius:50%; border:2px solid var(--bg3); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; margin-left:-4px; }
     .online-avatar:first-child { margin-left:0; }
-    .av-e { background:rgba(0,210,255,.2); color:var(--eduardo); border-color:var(--bg3); }
-    .av-r { background:rgba(167,139,250,.2); color:var(--rodrigo); border-color:var(--bg3); }
+    .av-e { background:rgba(0,210,255,.2); color:var(--eduardo); }
+    .av-r { background:rgba(167,139,250,.2); color:var(--rodrigo); }
     .av-x { background:var(--bg4); color:var(--muted); }
     .online-pulse { width:6px; height:6px; border-radius:50%; background:var(--done); box-shadow:0 0 6px var(--done-glow); animation:onlineBlink 2s ease-in-out infinite; flex-shrink:0; }
     @keyframes onlineBlink { 0%,100%{opacity:1} 50%{opacity:.3} }
     #onlineCount { font-weight:600; color:var(--text); }
 
     /* ── NOTIF BANNER ── */
-    .notif-banner {
-      position:fixed; top:68px; left:50%; transform:translateX(-50%) translateY(-16px);
-      z-index:500; background:var(--bg3); border:1px solid var(--border2);
-      border-left:3px solid var(--accent); border-radius:12px; padding:11px 18px;
-      display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600;
-      box-shadow:0 8px 32px rgba(0,0,0,.5); opacity:0; pointer-events:none;
-      transition:all .35s cubic-bezier(.16,1,.3,1); white-space:nowrap; max-width:90vw;
-    }
+    .notif-banner { position:fixed; top:68px; left:50%; transform:translateX(-50%) translateY(-16px); z-index:500; background:var(--bg3); border:1px solid var(--border2); border-left:3px solid var(--accent); border-radius:12px; padding:11px 18px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; box-shadow:0 8px 32px rgba(0,0,0,.5); opacity:0; pointer-events:none; transition:all .35s cubic-bezier(.16,1,.3,1); white-space:nowrap; max-width:90vw; }
     .notif-banner.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
     /* ── MAIN ── */
-    main { padding:20px 20px 0; display:flex; flex-direction:column; gap:20px; min-height:calc(100vh - 62px); }
+    main { padding:16px 20px 0; display:flex; flex-direction:column; gap:16px; min-height:calc(100vh - 62px); }
+
+    /* ══════════════════════════════
+       NOTAS PERMANENTES
+    ══════════════════════════════ */
+    .notes-section {
+      background: linear-gradient(135deg, rgba(245,197,24,.04) 0%, rgba(245,197,24,.02) 100%);
+      border: 1px solid rgba(245,197,24,.2);
+      border-left: 3px solid var(--note-accent);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .notes-section:hover { border-color: rgba(245,197,24,.35); }
+
+    .notes-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .notes-header-left { display:flex; align-items:center; gap:8px; }
+    .notes-pin { font-size:14px; }
+    .notes-label {
+      font-size:11px; font-weight:700; letter-spacing:1.2px;
+      text-transform:uppercase; color:var(--note-accent);
+    }
+    .notes-count {
+      font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);
+      background:rgba(245,197,24,.08); border:1px solid rgba(245,197,24,.15);
+      border-radius:5px; padding:1px 6px;
+    }
+    .notes-chevron {
+      font-size:10px; color:var(--muted); transition:transform .25s;
+    }
+    .notes-chevron.open { transform:rotate(180deg); }
+
+    .notes-body {
+      display:none; padding:0 12px 12px;
+    }
+    .notes-body.open { display:block; }
+
+    /* grid de notas */
+    .notes-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    /* nota individual */
+    .note-card {
+      background: rgba(245,197,24,.05);
+      border: 1px solid rgba(245,197,24,.15);
+      border-radius:8px;
+      padding:10px 12px;
+      position:relative;
+      transition:all .15s;
+      min-height:72px;
+    }
+    .note-card:hover { background:rgba(245,197,24,.08); border-color:rgba(245,197,24,.3); }
+    .note-card-text {
+      font-size:13px; line-height:1.5; color:var(--text);
+      word-break:break-word; white-space:pre-wrap;
+    }
+    .note-card-meta {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-top:8px;
+    }
+    .note-card-author {
+      font-family:'DM Mono',monospace; font-size:9px;
+      font-weight:700; letter-spacing:.5px;
+    }
+    .note-author-eduardo { color:var(--eduardo); }
+    .note-author-rodrigo { color:var(--rodrigo); }
+    .note-card-date { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); }
+    .note-del {
+      position:absolute; top:6px; right:6px;
+      background:rgba(255,68,68,.0); border:none; border-radius:4px;
+      color:transparent; font-size:11px; width:18px; height:18px;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:all .15s;
+    }
+    .note-card:hover .note-del { background:rgba(255,68,68,.1); color:#ff6b6b; }
+    .note-del:hover { background:rgba(255,68,68,.25) !important; }
+
+    /* añadir nota */
+    .note-add-row {
+      display:flex; gap:8px; align-items:flex-end;
+    }
+    .note-input {
+      flex:1; background:rgba(245,197,24,.05); border:1px solid rgba(245,197,24,.2);
+      border-radius:8px; padding:8px 11px;
+      font-family:'Syne',sans-serif; font-size:13px; color:var(--text);
+      outline:none; resize:none; min-height:38px; max-height:100px;
+      transition:border-color .2s; line-height:1.4;
+    }
+    .note-input:focus { border-color:rgba(245,197,24,.5); }
+    .note-input::placeholder { color:var(--muted); }
+    .note-submit {
+      background:rgba(245,197,24,.12); border:1px solid rgba(245,197,24,.3);
+      border-radius:8px; padding:8px 14px;
+      font-family:'Syne',sans-serif; font-size:12px; font-weight:700;
+      color:var(--note-accent); cursor:pointer; transition:all .15s;
+      white-space:nowrap; height:38px; display:flex; align-items:center; gap:5px;
+    }
+    .note-submit:hover { background:rgba(245,197,24,.2); border-color:rgba(245,197,24,.5); }
 
     /* ── BOARD ── */
     .board { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start; }
@@ -104,11 +183,7 @@
     .btn-add-card:hover { color:var(--accent); border-color:var(--accent); background:var(--bg4); }
 
     /* ── CARD ── */
-    .card {
-      background:var(--card-bg); border:1px solid var(--border2); border-radius:var(--card-r);
-      padding:10px 12px; cursor:grab; transition:all .18s; user-select:none;
-      box-shadow:0 2px 8px rgba(0,0,0,.3);
-    }
+    .card { background:var(--card-bg); border:1px solid var(--border2); border-radius:var(--card-r); padding:10px 12px; cursor:grab; transition:all .18s; user-select:none; box-shadow:0 2px 8px rgba(0,0,0,.3); }
     .card:hover { border-color:#50508a; transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.45); background:#1e1e30; }
     .card:active { cursor:grabbing; }
     .card.dragging { opacity:.3; transform:scale(.96); }
@@ -121,13 +196,17 @@
     .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; }
     .card-title { font-size:13px; font-weight:600; line-height:1.4; color:var(--text); flex:1; }
     .urgent-badge { font-size:9px; font-weight:800; letter-spacing:.8px; background:var(--urgent); color:#fff; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0; text-transform:uppercase; }
-    .card-meta { display:flex; align-items:center; gap:6px; margin-top:7px; flex-wrap:wrap; }
+    .card-meta { display:flex; align-items:center; gap:5px; margin-top:7px; flex-wrap:wrap; }
     .card-date { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
     .card-img-badge { font-size:10px; color:var(--muted); }
     .assignee-badge { font-size:10px; font-weight:700; border-radius:5px; padding:2px 7px; letter-spacing:.3px; }
     .assignee-eduardo { background:rgba(0,210,255,.12); color:var(--eduardo); border:1px solid rgba(0,210,255,.25); }
     .assignee-rodrigo  { background:rgba(167,139,250,.12); color:var(--rodrigo); border:1px solid rgba(167,139,250,.25); }
     .assignee-ambos    { background:rgba(108,99,255,.12); color:var(--accent2); border:1px solid rgba(108,99,255,.25); }
+    .time-badge { font-family:'DM Mono',monospace; font-size:10px; border-radius:5px; padding:2px 6px; display:flex; align-items:center; gap:3px; }
+    .time-badge.fresh  { background:rgba(81,207,102,.1);  color:var(--done); }
+    .time-badge.medium { background:rgba(255,169,77,.1);  color:var(--prog); }
+    .time-badge.late   { background:rgba(255,68,68,.12);  color:var(--urgent); border:1px solid rgba(255,68,68,.2); }
 
     /* ── BACKLOG ── */
     .backlog-section { border-top:1px solid var(--border); margin-top:8px; }
@@ -137,23 +216,9 @@
     .backlog-arrow { transition:transform .25s; font-size:11px; }
     .backlog-arrow.open { transform:rotate(90deg); }
     .backlog-count { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:2px 7px; margin-left:2px; }
-
-    /* drop zone */
-    .backlog-drop-zone {
-      margin:0 20px 10px; border:2px dashed var(--border2); border-radius:var(--card-r);
-      padding:13px 20px; display:flex; align-items:center; justify-content:center; gap:8px;
-      font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase;
-      color:var(--muted); transition:all .25s; cursor:default;
-      opacity:0; pointer-events:none; height:0; overflow:hidden; margin-bottom:0;
-    }
-    .backlog-drop-zone.dragging-active {
-      opacity:1; pointer-events:all; height:auto; margin-bottom:10px;
-    }
-    .backlog-drop-zone.drag-over {
-      border-color:var(--backlog); color:var(--backlog);
-      background:var(--backlog-glow); box-shadow:0 0 20px var(--backlog-glow);
-    }
-
+    .backlog-drop-zone { margin:0 20px 10px; border:2px dashed var(--border2); border-radius:var(--card-r); padding:13px 20px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); transition:all .25s; cursor:default; opacity:0; pointer-events:none; height:0; overflow:hidden; margin-bottom:0; }
+    .backlog-drop-zone.dragging-active { opacity:1; pointer-events:all; height:auto; margin-bottom:10px; }
+    .backlog-drop-zone.drag-over { border-color:var(--backlog); color:var(--backlog); background:var(--backlog-glow); box-shadow:0 0 20px var(--backlog-glow); }
     .backlog-list { display:none; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; padding:4px 20px 24px; }
     .backlog-list.open { display:grid; }
     .backlog-card { background:var(--bg2); border:1px solid var(--border); border-left:3px solid var(--backlog); border-radius:var(--card-r); padding:10px 13px; cursor:pointer; transition:all .15s; }
@@ -161,7 +226,7 @@
     .backlog-card-title { font-size:13px; font-weight:600; color:var(--text); }
     .backlog-card-date { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-top:3px; }
 
-    /* ghost */
+    /* GHOST */
     .card-ghost { height:40px; border:2px dashed var(--accent); border-radius:var(--card-r); background:var(--accent-glow); animation:ghostPulse 1s ease infinite; }
     @keyframes ghostPulse { 0%,100%{opacity:.5} 50%{opacity:1} }
 
@@ -181,7 +246,6 @@
     .modal-detail { width:100%; min-height:90px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:11px; font-family:'Syne',sans-serif; font-size:14px; line-height:1.6; color:var(--text); outline:none; resize:vertical; transition:border-color .2s; }
     .modal-detail:focus { border-color:var(--border2); }
     .modal-detail::placeholder { color:var(--muted); }
-
     .modal-flags { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .assignee-selector { display:flex; gap:6px; flex-wrap:wrap; }
     .assignee-btn { padding:6px 13px; border-radius:8px; border:1px solid var(--border); background:var(--bg3); font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; color:var(--muted); }
@@ -193,7 +257,21 @@
     .urgent-toggle { display:flex; align-items:center; gap:6px; padding:6px 13px; border-radius:8px; border:1px solid var(--border); background:var(--bg3); font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; color:var(--muted); }
     .urgent-toggle:hover { border-color:var(--urgent); color:var(--urgent); }
     .urgent-toggle.active { background:rgba(255,68,68,.1); border-color:var(--urgent); color:var(--urgent); }
-
+    .history-list { display:flex; flex-direction:column; gap:0; }
+    .history-item { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+    .history-item:last-child { border-bottom:none; }
+    .history-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+    .history-dot.todo    { background:var(--todo); }
+    .history-dot.prog    { background:var(--prog); }
+    .history-dot.done    { background:var(--done); }
+    .history-dot.backlog { background:var(--backlog); }
+    .history-dot.created { background:var(--accent); }
+    .history-text { flex:1; }
+    .history-action { font-size:12px; font-weight:600; color:var(--text); }
+    .who-eduardo { color:var(--eduardo); font-weight:700; }
+    .who-rodrigo { color:var(--rodrigo); font-weight:700; }
+    .history-time { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:2px; }
+    .history-empty { font-size:12px; color:var(--muted); font-style:italic; padding:6px 0; }
     .img-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; }
     .img-thumb { aspect-ratio:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); position:relative; cursor:pointer; transition:all .15s; }
     .img-thumb:hover { border-color:var(--border2); transform:scale(1.02); }
@@ -205,7 +283,6 @@
     .img-add-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--bg4); }
     .paste-hint { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:4px; }
     .paste-hint kbd { background:var(--bg4); border:1px solid var(--border2); border-radius:4px; padding:1px 5px; }
-
     .modal-footer { padding:11px 18px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .modal-status-select { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:7px 10px; font-family:'Syne',sans-serif; font-size:13px; color:var(--text); outline:none; cursor:pointer; }
     .modal-footer-btns { display:flex; gap:8px; }
@@ -213,7 +290,6 @@
     .btn-danger:hover { background:rgba(255,107,107,.1); border-color:#ff6b6b; }
     .btn-save { background:var(--accent); border:none; border-radius:8px; padding:7px 18px; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:#fff; cursor:pointer; box-shadow:0 0 16px var(--accent-glow); transition:all .15s; }
     .btn-save:hover { background:var(--accent2); transform:translateY(-1px); }
-
     .pill-todo    { background:rgba(255,107,157,.12); color:var(--todo); }
     .pill-prog    { background:rgba(255,169,77,.12);  color:var(--prog); }
     .pill-done    { background:rgba(81,207,102,.12);  color:var(--done); }
@@ -224,14 +300,11 @@
     .col-prog .col-title { color:var(--prog); }
     .col-done .col-dot   { background:var(--done); box-shadow:0 0 8px var(--done-glow); }
     .col-done .col-title { color:var(--done); }
-
     .lightbox { position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.92); display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity .2s; }
     .lightbox.open { opacity:1; pointer-events:all; }
     .lightbox img { max-width:100%; max-height:100%; border-radius:10px; object-fit:contain; }
-
     .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(12px); background:var(--bg3); border:1px solid var(--border2); border-radius:10px; padding:9px 16px; font-size:13px; font-weight:600; color:var(--text); box-shadow:0 8px 32px rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:all .3s; z-index:3000; white-space:nowrap; }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
     #file-input { display:none; }
 
     @media(max-width:750px) {
@@ -239,20 +312,16 @@
       main { padding:10px 10px 0; }
       header { padding:12px 16px; }
       .logo { font-size:14px; }
-      .online-pill span { display:none; }
+      .notes-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-dot"></div>
-    Tablero RR Importaciones
-  </div>
+  <div class="logo"><div class="logo-dot"></div>Tablero RR Importaciones</div>
   <div class="header-right">
-    <!-- Usuarios en línea -->
-    <div class="online-pill" id="onlinePill">
+    <div class="online-pill">
       <div class="online-pulse"></div>
       <div class="online-avatars" id="onlineAvatars"></div>
       <span id="onlineCount">1</span>
@@ -262,15 +331,33 @@
   </div>
 </header>
 
-<!-- NOTIF BANNER -->
 <div class="notif-banner" id="notifBanner">
-  <span>🔔</span>
-  <span id="notifText"></span>
+  <span>🔔</span><span id="notifText"></span>
 </div>
 
 <main>
+
+  <!-- ══ NOTAS PERMANENTES ══ -->
+  <div class="notes-section">
+    <div class="notes-header" onclick="toggleNotes()">
+      <div class="notes-header-left">
+        <span class="notes-pin">📌</span>
+        <span class="notes-label">Notas</span>
+        <span class="notes-count" id="notesCount">0</span>
+      </div>
+      <span class="notes-chevron open" id="notesChevron">▲</span>
+    </div>
+    <div class="notes-body open" id="notesBody">
+      <div class="notes-grid" id="notesGrid"></div>
+      <div class="note-add-row">
+        <textarea class="note-input" id="noteInput" placeholder="Escribe una nota permanente" rows="1"></textarea>
+        <button class="note-submit" onclick="addNote()">📌 Fijar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TABLERO ══ -->
   <div class="board">
-    <!-- POR HACER -->
     <div class="column col-todo" id="col-todo" data-status="todo"
          ondragover="onDragOver(event,this)" ondragleave="onDragLeave(event,this)" ondrop="onDrop(event,this)">
       <div class="col-header">
@@ -283,7 +370,6 @@
         <button class="btn-add-card" onclick="addCard('todo')">+</button>
       </div>
     </div>
-    <!-- EN PROGRESO -->
     <div class="column col-prog" id="col-prog" data-status="prog"
          ondragover="onDragOver(event,this)" ondragleave="onDragLeave(event,this)" ondrop="onDrop(event,this)">
       <div class="col-header">
@@ -296,7 +382,6 @@
         <button class="btn-add-card" onclick="addCard('prog')">+</button>
       </div>
     </div>
-    <!-- REALIZADO -->
     <div class="column col-done" id="col-done" data-status="done"
          ondragover="onDragOver(event,this)" ondragleave="onDragLeave(event,this)" ondrop="onDrop(event,this)">
       <div class="col-header">
@@ -320,7 +405,6 @@
         <span class="backlog-count" id="cnt-backlog">0</span>
       </button>
     </div>
-    <!-- DROP ZONE: visible mientras se arrastra -->
     <div class="backlog-drop-zone" id="backlogDropZone"
          ondragover="onBacklogDragOver(event)" ondragleave="onBacklogDragLeave(event)" ondrop="onBacklogDrop(event)">
       📦 Suelta aquí para archivar en backlog
@@ -329,13 +413,13 @@
   </div>
 </main>
 
-<!-- MODAL -->
+<!-- MODAL TAREA -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-top">
       <span class="modal-status-pill" id="modalPill"></span>
       <div class="modal-title-wrap">
-        <textarea class="modal-title" id="modalTitle" rows="1" placeholder="Título de la tarea…"></textarea>
+        <textarea class="modal-title" id="modalTitle" rows="1" placeholder="Título…"></textarea>
       </div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
@@ -355,6 +439,10 @@
       <div>
         <div class="modal-section-label">Detalle</div>
         <textarea class="modal-detail" id="modalDetail" placeholder="Descripción, notas, contexto…"></textarea>
+      </div>
+      <div>
+        <div class="modal-section-label">Historial de movimientos</div>
+        <div class="history-list" id="historyList"></div>
       </div>
       <div>
         <div class="modal-section-label">Imágenes</div>
@@ -383,15 +471,13 @@
 <input type="file" id="file-input" accept="image/*" multiple onchange="handleFileInput(event)">
 <div class="toast" id="toast"></div>
 
-<!-- ══════════════════════════════════════════════
-     FIREBASE — Firestore (tareas) + Realtime DB (presencia)
-     ══════════════════════════════════════════════ -->
+<!-- ══════════ FIREBASE ══════════ -->
 <script type="module">
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
   import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  import { getDatabase, ref, onValue, set, remove, onDisconnect, serverTimestamp as rtTS }
+  import { getDatabase, ref, onValue, set, onDisconnect, serverTimestamp as rtTS }
     from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
   const firebaseConfig = {
@@ -407,422 +493,447 @@
   const app  = initializeApp(firebaseConfig);
   const db   = getFirestore(app);
   const rtdb = getDatabase(app);
-  const COL  = "kanban_cards";
 
   window._cards       = {};
+  window._notes       = {};
   window._initialized = false;
 
   const syncDot = document.getElementById("syncDot");
   syncDot.classList.add("syncing");
 
-  // ── FIRESTORE: tareas ─────────────────────────────────────────────────────
-  onSnapshot(collection(db, COL), snap => {
-    const changes = snap.docChanges();
-    changes.forEach(ch => {
+  // ── TAREAS (Firestore) ────────────────────────────────────────────────────
+  onSnapshot(collection(db, "kanban_cards"), snap => {
+    snap.docChanges().forEach(ch => {
       if (ch.type === "removed") delete window._cards[ch.doc.id];
       else window._cards[ch.doc.id] = { id: ch.doc.id, ...ch.doc.data() };
     });
-
-    // Notificación + sonido cuando OTRO usuario agrega tarea
     if (window._initialized) {
-      changes.forEach(ch => {
+      snap.docChanges().forEach(ch => {
         if (ch.type === "added") {
-          const card = window._cards[ch.doc.id];
-          if (card) {
-            window.showNotif(`Nueva tarea: "${card.title.slice(0,40)}"`);
-            window.playSound("new");
-          }
+          const c = window._cards[ch.doc.id];
+          if (c) { window.showNotif(`Nueva tarea: "${c.title.slice(0,40)}"`); window.playSound("new"); }
         }
       });
     }
-
     syncDot.className = "sync-dot";
     renderAll();
     if (!window._initialized) window._initialized = true;
   }, () => { syncDot.classList.add("offline"); });
 
-  // ── FIRESTORE: persistir / borrar ─────────────────────────────────────────
   window.persistCard = async card => {
     syncDot.classList.add("syncing");
-    const { id, ...data } = card;
-    data.updatedAt = serverTimestamp();
-    await setDoc(doc(db, COL, id), data);
+    const { id, ...data } = card; data.updatedAt = serverTimestamp();
+    await setDoc(doc(db, "kanban_cards", id), data);
   };
   window.removeCard = async id => {
-    delete window._cards[id];
-    syncDot.classList.add("syncing");
-    await deleteDoc(doc(db, COL, id));
+    delete window._cards[id]; syncDot.classList.add("syncing");
+    await deleteDoc(doc(db, "kanban_cards", id));
   };
 
-  // ── REALTIME DATABASE: presencia ──────────────────────────────────────────
-  const sessionId  = Math.random().toString(36).slice(2, 10);
-  const myRef      = ref(rtdb, `kanban_online/${sessionId}`);
-  const connRef    = ref(rtdb, ".info/connected");
+  // ── NOTAS (Firestore, colección separada) ─────────────────────────────────
+  onSnapshot(collection(db, "kanban_notes"), snap => {
+    snap.docChanges().forEach(ch => {
+      if (ch.type === "removed") delete window._notes[ch.doc.id];
+      else window._notes[ch.doc.id] = { id: ch.doc.id, ...ch.doc.data() };
+    });
+    renderNotes();
+  });
 
-  onValue(connRef, snap => {
+  window.persistNote = async note => {
+    const { id, ...data } = note; data.createdAt = data.createdAt || Date.now();
+    await setDoc(doc(db, "kanban_notes", id), data);
+  };
+  window.deleteNote = async id => {
+    delete window._notes[id];
+    await deleteDoc(doc(db, "kanban_notes", id));
+  };
+
+  // ── PRESENCIA (Realtime DB) ───────────────────────────────────────────────
+  const sessionId = Math.random().toString(36).slice(2, 10);
+  const myRef = ref(rtdb, `kanban_online/${sessionId}`);
+  onValue(ref(rtdb, ".info/connected"), snap => {
     if (!snap.val()) return;
     set(myRef, { joined: rtTS() });
     onDisconnect(myRef).remove();
   });
-
-  // Escuchar quién está conectado y actualizar el contador
   onValue(ref(rtdb, "kanban_online"), snap => {
-    const sessions = snap.exists() ? Object.keys(snap.val()) : [];
-    const count    = Math.max(sessions.length, 1);
-
+    const count = snap.exists() ? Object.keys(snap.val()).length : 1;
     document.getElementById("onlineCount").textContent = count;
-
-    // Avatares: E y R se muestran si hay 2+ ; sino solo el dot
-    const avatarEl = document.getElementById("onlineAvatars");
-    if (count >= 2) {
-      avatarEl.innerHTML = `
-        <div class="online-avatar av-e" title="Eduardo">E</div>
-        <div class="online-avatar av-r" title="Rodrigo">R</div>
-        ${count > 2 ? `<div class="online-avatar av-x">+${count-2}</div>` : ""}`;
-    } else {
-      avatarEl.innerHTML = `<div class="online-avatar av-e" title="En línea">•</div>`;
-    }
+    const el = document.getElementById("onlineAvatars");
+    el.innerHTML = count >= 2
+      ? `<div class="online-avatar av-e">E</div><div class="online-avatar av-r">R</div>${count>2?`<div class="online-avatar av-x">+${count-2}</div>`:""}`
+      : `<div class="online-avatar av-e">•</div>`;
   });
 </script>
 
-<!-- ══════════════════════════════════════════════
-     APP JS — sin módulos ES
-     ══════════════════════════════════════════════ -->
+<!-- ══════════ APP JS ══════════ -->
 <script>
-  // ── UTILS ─────────────────────────────────────────────────────────────────
-  const uid  = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-  const fmt  = d  => new Date(d).toLocaleDateString("es-PE",{day:"2-digit",month:"short"});
-  const esc  = s  => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  const fmt = d  => new Date(d).toLocaleDateString("es-PE",{day:"2-digit",month:"short"});
+  const fmtFull = d => new Date(d).toLocaleDateString("es-PE",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+  const esc = s  => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const STATUS_LABEL = { todo:"Por hacer", prog:"En progreso", done:"Realizado", backlog:"Backlog" };
   const STATUS_PILL  = { todo:"pill-todo", prog:"pill-prog", done:"pill-done", backlog:"pill-backlog" };
 
+  // Nombre usuario
+  let _myName = localStorage.getItem("rr_username") || "";
+  if (!_myName) {
+    const n = prompt("¿Eres Eduardo o Rodrigo?","Eduardo");
+    _myName = (n||"Eduardo").trim();
+    localStorage.setItem("rr_username", _myName);
+  }
+
   let dragId = null, activeImgCardId = null, editingId = null;
   let _modalAssignee = "nadie", _modalUrgent = false;
+
+  // ── NOTAS ─────────────────────────────────────────────────────────────────
+  function renderNotes() {
+    const grid  = document.getElementById("notesGrid");
+    const notes = Object.values(window._notes||{}).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
+    document.getElementById("notesCount").textContent = notes.length;
+    grid.innerHTML = "";
+    if (!notes.length) {
+      grid.innerHTML = `<div style="font-size:12px;color:var(--muted);font-style:italic;padding:4px 0 10px;">Sin notas todavía. Fija información importante para ambos.</div>`;
+      return;
+    }
+    notes.forEach(note => {
+      const isEdua = note.author?.toLowerCase().includes("eduardo");
+      const isRodr = note.author?.toLowerCase().includes("rodrigo");
+      const authorClass = isEdua ? "note-author-eduardo" : isRodr ? "note-author-rodrigo" : "";
+      const div = document.createElement("div");
+      div.className = "note-card";
+      div.innerHTML = `
+        <button class="note-del" onclick="confirmDeleteNote('${note.id}')">✕</button>
+        <div class="note-card-text">${esc(note.text)}</div>
+        <div class="note-card-meta">
+          <span class="note-card-author ${authorClass}">${esc(note.author||"")}</span>
+          <span class="note-card-date">${fmt(note.createdAt)}</span>
+        </div>`;
+      grid.appendChild(div);
+    });
+  }
+
+  function addNote() {
+    const inp  = document.getElementById("noteInput");
+    const text = inp.value.trim(); if (!text) return;
+    const note = { id: uid(), text, author: _myName, createdAt: Date.now() };
+    window._notes[note.id] = note;
+    inp.value = ""; inp.style.height = "auto";
+    window.persistNote(note);
+    renderNotes();
+  }
+  window.addNote = addNote;
+
+  function confirmDeleteNote(id) {
+    if (!confirm("¿Eliminar esta nota?")) return;
+    window.deleteNote(id);
+    renderNotes();
+  }
+  window.confirmDeleteNote = confirmDeleteNote;
+
+  function toggleNotes() {
+    document.getElementById("notesBody").classList.toggle("open");
+    document.getElementById("notesChevron").classList.toggle("open");
+  }
+  window.toggleNotes = toggleNotes;
+
+  // Enter para guardar nota, Shift+Enter nueva línea
+  document.getElementById("noteInput").addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addNote(); }
+  });
+  // Auto-resize del textarea de nota
+  document.getElementById("noteInput").addEventListener("input", function() {
+    this.style.height = "auto"; this.style.height = Math.min(this.scrollHeight, 100) + "px";
+  });
 
   // ── SONIDO ────────────────────────────────────────────────────────────────
   window.playSound = function(type) {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const patterns = {
-        // nueva tarea: 3 notas ascendentes alegres
-        new:  [[660,0,0.12],[880,.1,0.10],[1100,.2,0.08]],
-        // notif colaborativa: 2 notas suaves
-        notif:[[880,0,0.10],[1100,.12,0.08]],
-        // archivar: nota descendente
-        archive:[[440,0,0.10],[330,.12,0.08]],
-      };
-      const seq = patterns[type] || patterns.new;
-      seq.forEach(([freq, delay, vol]) => {
-        const osc = ctx.createOscillator(), gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = "sine"; osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
-        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.22);
-        osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + 0.25);
+      const P = { new:[[660,0,.12],[880,.1,.10],[1100,.2,.08]], archive:[[440,0,.10],[330,.12,.08]] };
+      (P[type]||P.new).forEach(([f,d,v]) => {
+        const o=ctx.createOscillator(), g=ctx.createGain();
+        o.connect(g); g.connect(ctx.destination); o.type="sine"; o.frequency.value=f;
+        g.gain.setValueAtTime(0,ctx.currentTime+d);
+        g.gain.linearRampToValueAtTime(v,ctx.currentTime+d+.02);
+        g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+d+.22);
+        o.start(ctx.currentTime+d); o.stop(ctx.currentTime+d+.25);
       });
     } catch(e){}
   };
 
-  // ── NOTIF BANNER ──────────────────────────────────────────────────────────
-  let _notifTimer;
+  // ── NOTIF ─────────────────────────────────────────────────────────────────
+  let _nTimer;
   window.showNotif = function(msg) {
-    const b = document.getElementById("notifBanner");
-    document.getElementById("notifText").textContent = msg;
-    b.classList.add("show");
-    clearTimeout(_notifTimer);
-    _notifTimer = setTimeout(() => b.classList.remove("show"), 5000);
+    const b=document.getElementById("notifBanner");
+    document.getElementById("notifText").textContent=msg;
+    b.classList.add("show"); clearTimeout(_nTimer);
+    _nTimer=setTimeout(()=>b.classList.remove("show"),5000);
   };
 
-  // ── RENDER ────────────────────────────────────────────────────────────────
+  // ── TIEMPO EN COLUMNA ─────────────────────────────────────────────────────
+  function timeInCol(card) {
+    const since = card.statusChangedAt || card.createdAt || Date.now();
+    const mins  = (Date.now() - since) / 60000;
+    if (mins < 60)  return { label:`${Math.round(mins)}m`, cls:"fresh" };
+    const hrs = mins/60;
+    if (hrs  < 24)  return { label:`${Math.round(hrs)}h`,  cls:"fresh" };
+    const days = hrs/24;
+    return { label:`${Math.round(days)}d`, cls: days < 3 ? "medium" : "late" };
+  }
+
+  // ── HISTORIAL ─────────────────────────────────────────────────────────────
+  function renderHistory(card) {
+    const list   = document.getElementById("historyList");
+    const events = card.history || [];
+    if (!events.length) { list.innerHTML = `<div class="history-empty">Sin movimientos registrados.</div>`; return; }
+    list.innerHTML = [...events].reverse().map(ev => {
+      const dot = ev.toStatus || "created";
+      const wc  = ev.by?.toLowerCase().includes("eduardo") ? "who-eduardo" : ev.by?.toLowerCase().includes("rodrigo") ? "who-rodrigo" : "";
+      const action = ev.type === "created"
+        ? `Creada por <span class="${wc}">${esc(ev.by)}</span>`
+        : `Movida a <strong>${STATUS_LABEL[ev.toStatus]||ev.toStatus}</strong> por <span class="${wc}">${esc(ev.by)}</span>`;
+      return `<div class="history-item"><div class="history-dot ${dot}"></div><div class="history-text"><div class="history-action">${action}</div>${ev.at?`<div class="history-time">${fmtFull(ev.at)}</div>`:""}</div></div>`;
+    }).join("");
+  }
+
+  function addHistoryEvent(card, type, toStatus) {
+    card.history = card.history || [];
+    card.history.push({ type, toStatus, by: _myName, at: Date.now() });
+  }
+
+  // ── RENDER TAREAS ─────────────────────────────────────────────────────────
   function renderAll() {
     ["todo","prog","done"].forEach(s => {
       const wrap = document.getElementById("cards-"+s);
-      const list = Object.values(window._cards).filter(c => c.status === s)
-                    .sort((a,b) => (a.order||0)-(b.order||0));
-      wrap.innerHTML = "";
-      list.forEach(c => wrap.appendChild(makeCard(c)));
-      document.getElementById("cnt-"+s).textContent = list.length;
+      const list = Object.values(window._cards).filter(c=>c.status===s).sort((a,b)=>(a.order||0)-(b.order||0));
+      wrap.innerHTML=""; list.forEach(c=>wrap.appendChild(makeCard(c)));
+      document.getElementById("cnt-"+s).textContent=list.length;
     });
-    const blist = Object.values(window._cards)
-                   .filter(c => c.status === "backlog")
-                   .sort((a,b) => b.createdAt - a.createdAt);
+    const blist = Object.values(window._cards).filter(c=>c.status==="backlog").sort((a,b)=>b.createdAt-a.createdAt);
     const bl = document.getElementById("backlog-list");
-    bl.innerHTML = "";
-    blist.forEach(c => bl.appendChild(makeBacklogCard(c)));
-    document.getElementById("cnt-backlog").textContent = blist.length;
+    bl.innerHTML=""; blist.forEach(c=>bl.appendChild(makeBacklogCard(c)));
+    document.getElementById("cnt-backlog").textContent=blist.length;
   }
 
   function makeCard(card) {
-    const div = document.createElement("div");
-    div.className = "card" + (card.urgent ? " urgent" : "");
-    div.draggable = true; div.dataset.id = card.id;
-    const imgs = (card.images||[]).length;
-    let badge = "";
-    if (card.assignee === "eduardo") badge = `<span class="assignee-badge assignee-eduardo">👤 Eduardo</span>`;
-    else if (card.assignee === "rodrigo") badge = `<span class="assignee-badge assignee-rodrigo">👤 Rodrigo</span>`;
-    else if (card.assignee === "ambos")   badge = `<span class="assignee-badge assignee-ambos">👥 Ambos</span>`;
-    div.innerHTML = `
+    const div=document.createElement("div");
+    div.className="card"+(card.urgent?" urgent":"");
+    div.draggable=true; div.dataset.id=card.id;
+    const imgs=(card.images||[]).length;
+    let badge="";
+    if(card.assignee==="eduardo") badge=`<span class="assignee-badge assignee-eduardo">👤 Eduardo</span>`;
+    else if(card.assignee==="rodrigo") badge=`<span class="assignee-badge assignee-rodrigo">👤 Rodrigo</span>`;
+    else if(card.assignee==="ambos") badge=`<span class="assignee-badge assignee-ambos">👥 Ambos</span>`;
+    const tc=timeInCol(card);
+    div.innerHTML=`
       <div class="card-top">
         <div class="card-title">${esc(card.title)}</div>
-        ${card.urgent ? `<span class="urgent-badge">⚡ Urgente</span>` : ""}
+        ${card.urgent?`<span class="urgent-badge">⚡ Urgente</span>`:""}
       </div>
       <div class="card-meta">
         <span class="card-date">${fmt(card.createdAt)}</span>
         ${badge}
-        ${imgs ? `<span class="card-img-badge">🖼 ${imgs}</span>` : ""}
+        <span class="time-badge ${tc.cls}" title="Tiempo en columna">⏱ ${tc.label}</span>
+        ${imgs?`<span class="card-img-badge">🖼 ${imgs}</span>`:""}
       </div>`;
-    div.addEventListener("dragstart", e => onDragStart(e, card.id));
-    div.addEventListener("dragend",   () => div.classList.remove("dragging"));
-    div.addEventListener("click",     () => openModal(card.id));
+    div.addEventListener("dragstart",e=>onDragStart(e,card.id));
+    div.addEventListener("dragend",()=>div.classList.remove("dragging"));
+    div.addEventListener("click",()=>openModal(card.id));
     return div;
   }
 
   function makeBacklogCard(card) {
-    const div = document.createElement("div");
-    div.className = "backlog-card";
-    div.innerHTML = `
-      <div class="backlog-card-title">${esc(card.title)}</div>
-      <div class="backlog-card-date">${fmt(card.createdAt)}</div>`;
-    div.addEventListener("click", () => openModal(card.id));
+    const div=document.createElement("div"); div.className="backlog-card";
+    div.innerHTML=`<div class="backlog-card-title">${esc(card.title)}</div><div class="backlog-card-date">${fmt(card.createdAt)}</div>`;
+    div.addEventListener("click",()=>openModal(card.id));
     return div;
   }
 
-  // ── ADD CARD ──────────────────────────────────────────────────────────────
+  // ── ADD TAREA ─────────────────────────────────────────────────────────────
   function addCard(status) {
-    const inp = document.getElementById("inp-"+status);
-    const title = inp.value.trim(); if (!title) return;
-    const card = {
-      id: uid(), title, status, detail: "", images: [],
-      assignee: "nadie", urgent: false,
-      createdAt: Date.now(), order: Date.now()
-    };
-    window._cards[card.id] = card;
-    inp.value = "";
-    // Sonido inmediato para quien crea
-    window.playSound("new");
-    window.persistCard(card);
+    const inp=document.getElementById("inp-"+status);
+    const title=inp.value.trim(); if(!title) return;
+    const card={id:uid(),title,status,detail:"",images:[],assignee:"nadie",urgent:false,createdAt:Date.now(),order:Date.now(),statusChangedAt:Date.now(),history:[]};
+    addHistoryEvent(card,"created",status);
+    window._cards[card.id]=card; inp.value="";
+    window.playSound("new"); window.persistCard(card);
   }
-  window.addCard = addCard;
-  function addCardKey(e, s) { if (e.key === "Enter") addCard(s); }
-  window.addCardKey = addCardKey;
+  window.addCard=addCard;
+  function addCardKey(e,s){if(e.key==="Enter")addCard(s);}
+  window.addCardKey=addCardKey;
 
   // ── DRAG & DROP ───────────────────────────────────────────────────────────
-  function onDragStart(e, id) {
-    dragId = id;
-    setTimeout(() => document.querySelector(`[data-id="${id}"]`)?.classList.add("dragging"), 0);
-    e.dataTransfer.effectAllowed = "move";
-    // Mostrar drop zone del backlog
+  function onDragStart(e,id){
+    dragId=id;
+    setTimeout(()=>document.querySelector(`[data-id="${id}"]`)?.classList.add("dragging"),0);
+    e.dataTransfer.effectAllowed="move";
     document.getElementById("backlogDropZone").classList.add("dragging-active");
   }
-
-  function onDragOver(e, col) {
+  function onDragOver(e,col){
     e.preventDefault(); col.classList.add("drag-over");
-    const cards = col.querySelector(".col-cards");
-    let ghost = document.querySelector(".card-ghost");
-    if (!ghost) { ghost = document.createElement("div"); ghost.className = "card-ghost"; }
-    const afterEl = getDragAfterElement(cards, e.clientY);
-    if (afterEl) cards.insertBefore(ghost, afterEl); else cards.appendChild(ghost);
+    const cards=col.querySelector(".col-cards");
+    let ghost=document.querySelector(".card-ghost");
+    if(!ghost){ghost=document.createElement("div");ghost.className="card-ghost";}
+    const after=getDragAfterElement(cards,e.clientY);
+    if(after) cards.insertBefore(ghost,after); else cards.appendChild(ghost);
   }
-  window.onDragOver = onDragOver;
-
-  function onDragLeave(e, col) {
-    if (!col.contains(e.relatedTarget)) {
-      col.classList.remove("drag-over");
-      document.querySelector(".card-ghost")?.remove();
-    }
+  window.onDragOver=onDragOver;
+  function onDragLeave(e,col){
+    if(!col.contains(e.relatedTarget)){col.classList.remove("drag-over");document.querySelector(".card-ghost")?.remove();}
   }
-  window.onDragLeave = onDragLeave;
-
-  function onDrop(e, col) {
+  window.onDragLeave=onDragLeave;
+  function onDrop(e,col){
     e.preventDefault(); col.classList.remove("drag-over");
     document.querySelector(".card-ghost")?.remove();
     document.getElementById("backlogDropZone").classList.remove("dragging-active");
-    if (!dragId) return;
-    const newStatus = col.dataset.status;
-    const cards = col.querySelector(".col-cards");
-    const afterEl = getDragAfterElement(cards, e.clientY);
-    const siblings = [...cards.querySelectorAll(".card")].map(d => d.dataset.id);
-    const afterIdx = afterEl ? siblings.indexOf(afterEl.dataset.id) : siblings.length;
-    const card = window._cards[dragId]; if (!card) return;
-    card.status = newStatus; card.order = Date.now() + afterIdx;
-    window.persistCard(card);
-    showToast("Movido a " + STATUS_LABEL[newStatus]);
-    dragId = null;
+    if(!dragId) return;
+    const newStatus=col.dataset.status;
+    const cards=col.querySelector(".col-cards");
+    const after=getDragAfterElement(cards,e.clientY);
+    const siblings=[...cards.querySelectorAll(".card")].map(d=>d.dataset.id);
+    const afterIdx=after?siblings.indexOf(after.dataset.id):siblings.length;
+    const card=window._cards[dragId]; if(!card) return;
+    if(card.status!==newStatus){addHistoryEvent(card,"move",newStatus);card.statusChangedAt=Date.now();}
+    card.status=newStatus; card.order=Date.now()+afterIdx;
+    window.persistCard(card); showToast("Movido a "+STATUS_LABEL[newStatus]); dragId=null;
   }
-  window.onDrop = onDrop;
-
-  // ── BACKLOG DROP ZONE ────────────────────────────────────────────────────
-  function onBacklogDragOver(e) {
+  window.onDrop=onDrop;
+  function onBacklogDragOver(e){e.preventDefault();document.getElementById("backlogDropZone").classList.add("drag-over");}
+  window.onBacklogDragOver=onBacklogDragOver;
+  function onBacklogDragLeave(){document.getElementById("backlogDropZone").classList.remove("drag-over");}
+  window.onBacklogDragLeave=onBacklogDragLeave;
+  function onBacklogDrop(e){
     e.preventDefault();
-    document.getElementById("backlogDropZone").classList.add("drag-over");
-  }
-  window.onBacklogDragOver = onBacklogDragOver;
-
-  function onBacklogDragLeave(e) {
-    document.getElementById("backlogDropZone").classList.remove("drag-over");
-  }
-  window.onBacklogDragLeave = onBacklogDragLeave;
-
-  function onBacklogDrop(e) {
-    e.preventDefault();
-    const dz = document.getElementById("backlogDropZone");
-    dz.classList.remove("drag-over");
-    dz.classList.remove("dragging-active");
+    const dz=document.getElementById("backlogDropZone");
+    dz.classList.remove("drag-over","dragging-active");
     document.querySelector(".card-ghost")?.remove();
-    if (!dragId) return;
-    const card = window._cards[dragId]; if (!card) return;
-    card.status = "backlog"; card.order = Date.now();
+    if(!dragId) return;
+    const card=window._cards[dragId]; if(!card) return;
+    addHistoryEvent(card,"move","backlog"); card.status="backlog"; card.order=Date.now(); card.statusChangedAt=Date.now();
     window.persistCard(card);
-    // Abrir backlog automáticamente para que lo vea
     document.getElementById("backlog-list").classList.add("open");
     document.getElementById("backlogArrow").classList.add("open");
-    window.playSound("archive");
-    showToast("Archivado en backlog");
-    dragId = null;
+    window.playSound("archive"); showToast("Archivado en backlog"); dragId=null;
   }
-  window.onBacklogDrop = onBacklogDrop;
-
-  // Ocultar drop zone cuando se suelta fuera de todo
-  document.addEventListener("dragend", () => {
+  window.onBacklogDrop=onBacklogDrop;
+  document.addEventListener("dragend",()=>{
     document.getElementById("backlogDropZone").classList.remove("dragging-active","drag-over");
-    document.querySelector(".card-ghost")?.remove();
-    dragId = null;
+    document.querySelector(".card-ghost")?.remove(); dragId=null;
   });
-
-  function getDragAfterElement(container, y) {
-    return [...container.querySelectorAll(".card:not(.dragging)")].reduce((closest, el) => {
-      const offset = y - el.getBoundingClientRect().top - el.getBoundingClientRect().height / 2;
-      return (offset < 0 && offset > closest.offset) ? { offset, el } : closest;
-    }, { offset: Number.NEGATIVE_INFINITY }).el;
+  function getDragAfterElement(c,y){
+    return [...c.querySelectorAll(".card:not(.dragging)")].reduce((cl,el)=>{
+      const off=y-el.getBoundingClientRect().top-el.getBoundingClientRect().height/2;
+      return(off<0&&off>cl.offset)?{offset:off,el}:cl;
+    },{offset:Number.NEGATIVE_INFINITY}).el;
   }
 
   // ── MODAL ─────────────────────────────────────────────────────────────────
-  function openModal(id) {
-    editingId = id; const card = window._cards[id]; if (!card) return;
-    document.getElementById("modalTitle").value  = card.title  || "";
-    document.getElementById("modalDetail").value = card.detail || "";
-    document.getElementById("modalStatus").value = card.status;
-    const pill = document.getElementById("modalPill");
-    pill.textContent = STATUS_LABEL[card.status]; pill.className = "modal-status-pill " + STATUS_PILL[card.status];
-    _modalAssignee = card.assignee || "nadie"; refreshAssigneeUI();
-    _modalUrgent   = !!card.urgent; refreshUrgentUI();
-    renderModalImages(card.images || []);
+  function openModal(id){
+    editingId=id; const card=window._cards[id]; if(!card) return;
+    document.getElementById("modalTitle").value=card.title||"";
+    document.getElementById("modalDetail").value=card.detail||"";
+    document.getElementById("modalStatus").value=card.status;
+    const pill=document.getElementById("modalPill");
+    pill.textContent=STATUS_LABEL[card.status]; pill.className="modal-status-pill "+STATUS_PILL[card.status];
+    _modalAssignee=card.assignee||"nadie"; refreshAssigneeUI();
+    _modalUrgent=!!card.urgent; refreshUrgentUI();
+    renderHistory(card); renderModalImages(card.images||[]);
     document.getElementById("modalOverlay").classList.add("open");
-    const t = document.getElementById("modalTitle");
-    t.style.height = "auto"; t.style.height = t.scrollHeight + "px";
-    t.oninput = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + "px"; };
+    const t=document.getElementById("modalTitle");
+    t.style.height="auto"; t.style.height=t.scrollHeight+"px";
+    t.oninput=()=>{t.style.height="auto";t.style.height=t.scrollHeight+"px";};
   }
-  window.openModal = openModal;
-
-  function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); editingId = null; }
-  window.closeModal = closeModal;
-  function closeModalOutside(e) { if (e.target === document.getElementById("modalOverlay")) closeModal(); }
-  window.closeModalOutside = closeModalOutside;
-
-  function saveModal() {
-    if (!editingId) return; const card = window._cards[editingId]; if (!card) return;
-    card.title    = document.getElementById("modalTitle").value.trim() || card.title;
-    card.detail   = document.getElementById("modalDetail").value;
-    card.status   = document.getElementById("modalStatus").value;
-    card.assignee = _modalAssignee; card.urgent = _modalUrgent;
+  window.openModal=openModal;
+  function closeModal(){document.getElementById("modalOverlay").classList.remove("open");editingId=null;}
+  window.closeModal=closeModal;
+  function closeModalOutside(e){if(e.target===document.getElementById("modalOverlay"))closeModal();}
+  window.closeModalOutside=closeModalOutside;
+  function saveModal(){
+    if(!editingId) return; const card=window._cards[editingId]; if(!card) return;
+    const ns=document.getElementById("modalStatus").value;
+    if(ns!==card.status){addHistoryEvent(card,"move",ns);card.statusChangedAt=Date.now();}
+    card.title=document.getElementById("modalTitle").value.trim()||card.title;
+    card.detail=document.getElementById("modalDetail").value;
+    card.status=ns; card.assignee=_modalAssignee; card.urgent=_modalUrgent;
     window.persistCard(card); closeModal(); showToast("Guardado ✓");
   }
-  window.saveModal = saveModal;
-
-  function deleteCard() {
-    if (!editingId) return; if (!confirm("¿Eliminar esta tarea?")) return;
+  window.saveModal=saveModal;
+  function deleteCard(){
+    if(!editingId) return; if(!confirm("¿Eliminar esta tarea?")) return;
     window.removeCard(editingId); closeModal(); showToast("Tarea eliminada");
   }
-  window.deleteCard = deleteCard;
-
-  // ── ASSIGNEE / URGENT ────────────────────────────────────────────────────
-  function setAssignee(val) { _modalAssignee = val; refreshAssigneeUI(); }
-  window.setAssignee = setAssignee;
-  function refreshAssigneeUI() {
-    ["nadie","eduardo","rodrigo","ambos"].forEach(v => {
-      const b = document.getElementById("btn-"+v);
-      if (b) b.className = "assignee-btn" + (_modalAssignee === v ? " active-"+v : "");
+  window.deleteCard=deleteCard;
+  function setAssignee(v){_modalAssignee=v;refreshAssigneeUI();}
+  window.setAssignee=setAssignee;
+  function refreshAssigneeUI(){
+    ["nadie","eduardo","rodrigo","ambos"].forEach(v=>{
+      const b=document.getElementById("btn-"+v);
+      if(b)b.className="assignee-btn"+(_modalAssignee===v?" active-"+v:"");
     });
   }
-  function toggleUrgent() { _modalUrgent = !_modalUrgent; refreshUrgentUI(); }
-  window.toggleUrgent = toggleUrgent;
-  function refreshUrgentUI() {
-    const b = document.getElementById("urgentToggle");
-    _modalUrgent ? b.classList.add("active") : b.classList.remove("active");
-  }
+  function toggleUrgent(){_modalUrgent=!_modalUrgent;refreshUrgentUI();}
+  window.toggleUrgent=toggleUrgent;
+  function refreshUrgentUI(){const b=document.getElementById("urgentToggle");_modalUrgent?b.classList.add("active"):b.classList.remove("active");}
 
   // ── IMÁGENES ──────────────────────────────────────────────────────────────
-  function renderModalImages(images) {
-    const grid = document.getElementById("imgGrid"); grid.innerHTML = "";
-    images.forEach((src, i) => {
-      const wrap = document.createElement("div"); wrap.className = "img-thumb";
-      wrap.innerHTML = `<img src="${src}" alt="img"><button class="img-del">✕</button>`;
-      wrap.querySelector("img").addEventListener("click", () => openLightbox(src));
-      wrap.querySelector(".img-del").addEventListener("click", e => { e.stopPropagation(); removeImg(i); });
-      grid.appendChild(wrap);
+  function renderModalImages(images){
+    const grid=document.getElementById("imgGrid"); grid.innerHTML="";
+    images.forEach((src,i)=>{
+      const w=document.createElement("div"); w.className="img-thumb";
+      w.innerHTML=`<img src="${src}" alt="img"><button class="img-del">✕</button>`;
+      w.querySelector("img").addEventListener("click",()=>openLightbox(src));
+      w.querySelector(".img-del").addEventListener("click",e=>{e.stopPropagation();removeImg(i);});
+      grid.appendChild(w);
     });
-    const addBtn = document.createElement("div"); addBtn.className = "img-add-btn";
-    addBtn.innerHTML = `<span>+</span><span>Subir</span>`;
-    addBtn.addEventListener("click", () => { activeImgCardId = editingId; document.getElementById("file-input").click(); });
-    grid.appendChild(addBtn);
+    const a=document.createElement("div"); a.className="img-add-btn";
+    a.innerHTML=`<span>+</span><span>Subir</span>`;
+    a.addEventListener("click",()=>{activeImgCardId=editingId;document.getElementById("file-input").click();});
+    grid.appendChild(a);
   }
-  function removeImg(idx) {
-    const card = window._cards[editingId]; if (!card) return;
-    card.images.splice(idx, 1); renderModalImages(card.images); window.persistCard(card);
+  function removeImg(i){const c=window._cards[editingId];if(!c)return;c.images.splice(i,1);renderModalImages(c.images);window.persistCard(c);}
+  function handleFileInput(e){
+    const id=activeImgCardId||editingId; if(!id) return;
+    [...e.target.files].forEach(f=>{
+      const r=new FileReader(); r.onload=ev=>{
+        const c=window._cards[id]; if(!c) return;
+        c.images=c.images||[]; c.images.push(ev.target.result);
+        if(editingId===id)renderModalImages(c.images); window.persistCard(c);
+      }; r.readAsDataURL(f);
+    }); e.target.value="";
   }
-  function handleFileInput(e) {
-    const id = activeImgCardId || editingId; if (!id) return;
-    [...e.target.files].forEach(f => {
-      const r = new FileReader();
-      r.onload = ev => {
-        const card = window._cards[id]; if (!card) return;
-        card.images = card.images || []; card.images.push(ev.target.result);
-        if (editingId === id) renderModalImages(card.images);
-        window.persistCard(card);
-      };
-      r.readAsDataURL(f);
-    });
-    e.target.value = "";
-  }
-  window.handleFileInput = handleFileInput;
-
-  document.addEventListener("paste", e => {
-    if (!editingId) return;
-    [...(e.clipboardData?.items||[])].forEach(item => {
-      if (!item.type.startsWith("image/")) return;
-      const r = new FileReader();
-      r.onload = ev => {
-        const card = window._cards[editingId]; if (!card) return;
-        card.images = card.images || []; card.images.push(ev.target.result);
-        renderModalImages(card.images); window.persistCard(card);
-        showToast("Imagen pegada ✓");
-      };
-      r.readAsDataURL(item.getAsFile());
+  window.handleFileInput=handleFileInput;
+  document.addEventListener("paste",e=>{
+    if(!editingId) return;
+    [...(e.clipboardData?.items||[])].forEach(item=>{
+      if(!item.type.startsWith("image/")) return;
+      const r=new FileReader(); r.onload=ev=>{
+        const c=window._cards[editingId]; if(!c) return;
+        c.images=c.images||[]; c.images.push(ev.target.result);
+        renderModalImages(c.images); window.persistCard(c); showToast("Imagen pegada ✓");
+      }; r.readAsDataURL(item.getAsFile());
     });
   });
+  function openLightbox(src){document.getElementById("lightboxImg").src=src;document.getElementById("lightbox").classList.add("open");}
 
-  function openLightbox(src) { document.getElementById("lightboxImg").src = src; document.getElementById("lightbox").classList.add("open"); }
-
-  // ── BACKLOG TOGGLE ────────────────────────────────────────────────────────
-  function toggleBacklog() {
+  function toggleBacklog(){
     document.getElementById("backlog-list").classList.toggle("open");
     document.getElementById("backlogArrow").classList.toggle("open");
   }
-  window.toggleBacklog = toggleBacklog;
+  window.toggleBacklog=toggleBacklog;
 
-  // ── TOAST ─────────────────────────────────────────────────────────────────
-  let _toastTimer;
-  function showToast(msg) {
-    const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
-    clearTimeout(_toastTimer); _toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  let _tTimer;
+  function showToast(msg){
+    const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(_tTimer); _tTimer=setTimeout(()=>t.classList.remove("show"),2200);
   }
 
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") {
+  setInterval(renderAll, 60000);
+
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){
       document.getElementById("lightbox").classList.remove("open");
-      if (document.getElementById("modalOverlay").classList.contains("open")) closeModal();
+      if(document.getElementById("modalOverlay").classList.contains("open"))closeModal();
     }
   });
 </script>
